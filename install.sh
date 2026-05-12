@@ -1,80 +1,59 @@
 #!/usr/bin/env bash
 
 install_dir="${XDG_BIN_HOME:-${HOME}/.local/bin}"
-target="${install_dir}/license"
+base_url="https://raw.githubusercontent.com/unamatasanatarai/license/master"
 
-script_url="https://raw.githubusercontent.com/unamatasanatarai/license/master/license"
+files=("licenses" "licenses-list" "licenses-get" "licenses-update")
 
 if ! command -v curl >/dev/null 2>&1; then
     printf '%s\n' 'curl is required' >&2
     exit 1
 fi
 
-mkdir -p "$install_dir"
-
-status="$?"
-
-if [ "$status" -ne 0 ]; then
+mkdir -p "$install_dir" || {
     printf '%s\n' 'failed to create install directory' >&2
     exit 1
-fi
+}
 
-tmp_file="$(mktemp "${TMPDIR:-/tmp}/license-install.$$")"
+for file in "${files[@]}"; do
+    target="${install_dir}/${file}"
+    script_url="${base_url}/${file}"
 
-if [ ! -f "$tmp_file" ]; then
-    printf '%s\n' 'failed to create temporary file' >&2
-    exit 1
-fi
+    printf 'installing %s...\n' "$file"
 
-curl \
-    --silent \
-    --show-error \
-    --fail \
-    --location \
-    --connect-timeout 10 \
-    --max-time 30 \
-    --output "$tmp_file" \
-    "$script_url"
+    tmp_file="$(mktemp "${TMPDIR:-/tmp}/license-install-${file}.$$")"
 
-status="$?"
+    curl \
+        --silent \
+        --show-error \
+        --fail \
+        --location \
+        --connect-timeout 10 \
+        --max-time 30 \
+        --output "$tmp_file" \
+        "$script_url"
 
-if [ "$status" -ne 0 ]; then
-    rm -f "$tmp_file"
-    printf '%s\n' 'failed to download installer payload' >&2
-    exit 1
-fi
+    status="$?"
+    if [ "$status" -ne 0 ]; then
+        rm -f "$tmp_file"
+        printf 'failed to download %s\n' "$file" >&2
+        exit 1
+    fi
 
-if [ ! -s "$tmp_file" ]; then
-    rm -f "$tmp_file"
-    printf '%s\n' 'downloaded file is empty' >&2
-    exit 1
-fi
+    if [ ! -s "$tmp_file" ]; then
+        rm -f "$tmp_file"
+        printf '%s\n' "downloaded file ${file} is empty" >&2
+        exit 1
+    fi
 
-chmod +x "$tmp_file"
+    chmod +x "$tmp_file"
+    mv "$tmp_file" "$target"
+done
 
-status="$?"
-
-if [ "$status" -ne 0 ]; then
-    rm -f "$tmp_file"
-    printf '%s\n' 'failed to mark executable' >&2
-    exit 1
-fi
-
-mv "$tmp_file" "$target"
-
-status="$?"
-
-if [ "$status" -ne 0 ]; then
-    rm -f "$tmp_file"
-    printf '%s\n' 'failed to install binary' >&2
-    exit 1
-fi
-
-printf '%s\n' "installed: ${target}"
+printf '\ninstalled to: %s\n' "$install_dir"
 
 case ":$PATH:" in
-*":${install_dir}:"*)
-    ;;
+*":${install_dir}:"*) ;;
 *)
     printf '\n%s\n\n' 'add this to your shell profile:'
     printf '%s\n' "export PATH=\"${install_dir}:\$PATH\""
@@ -82,6 +61,6 @@ case ":$PATH:" in
 esac
 
 printf '\n%s\n' 'usage:'
-printf '%s\n' '  license list'
-printf '%s\n' '  license download MIT'
-printf '%s\n' '  license download Apache-2.0'
+printf '%s\n' '  licenses update'
+printf '%s\n' '  licenses list'
+printf '%s\n' '  licenses get MIT'
