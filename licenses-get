@@ -1,27 +1,36 @@
 #!/usr/bin/env bash
 
-__data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/licenses"
-__license_id="$1"
+license_id="$1"
 
-if [[ -z "$__license_id" ]]; then
-    printf 'usage: %s <license-id>\n' "${0##*/}" >&2
-    exit 1
+if [[ -z "$license_id" ]]; then
+	printf 'usage: %s <license-id>\n' "${0##*/}" >&2
+	exit 1
 fi
 
-__license_path="${__data_dir}/${__license_id}"
+data_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
+license_path="$data_dir/licenses/$license_id"
+dest_path="$PWD/LICENSE"
 
-if [[ ! -f "$__license_path" ]]; then
-    printf 'license not found: %s (run licenses-update to sync)\n' "$__license_id" >&2
-    exit 1
-fi
-if [[ -d "$PWD/LICENSE" ]]; then
-    printf 'error: a directory named "LICENSE" already exists in %s\n' "$PWD" >&2
-    exit 1
+if [[ ! -f "$license_path" ]]; then
+	printf 'license not found: %s (run licenses-update to sync)\n' "$license_id" >&2
+	exit 2
 fi
 
-cp "$__license_path" "$PWD/LICENSE" || {
-    printf 'failed to copy license file to %s/LICENSE\n' "$PWD" >&2
-    exit 1
-}
+if [[ -d "$dest_path" || -d "$PWD/license" || -d "$PWD/License" ]]; then
+	printf 'error: conflicting LICENSE directory exists in %s\n' "$PWD" >&2
+	exit 3
+fi
 
-printf 'copied %s to %s/LICENSE\n' "$__license_id" "$PWD"
+if [[ -e "$dest_path" && ! -f "$dest_path" ]]; then
+	printf 'error: destination exists and is not a regular file: %s\n' "$dest_path" >&2
+	exit 4
+fi
+
+cp -- "$license_path" "$dest_path"
+
+if [[ $? -ne 0 ]]; then
+	printf 'failed to copy license file to %s\n' "$dest_path" >&2
+	exit 5
+fi
+
+printf 'copied %s to %s\n' "$license_id" "$dest_path"
