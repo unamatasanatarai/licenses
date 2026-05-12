@@ -1,2 +1,11 @@
-MIT
-GPL-2.0
+agpl3
+apache-2.0
+boost
+cc0
+eclipse2
+gpl2
+gpl3
+lpgl21
+mit
+mpl2
+unlicense
