@@ -3,11 +3,11 @@
 __data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/licenses"
 
 if [[ ! -d "$__data_dir" ]]; then
-	printf 'no licenses found locally, run licenses update first\n' >&2
-	exit 1
+    printf 'no licenses found locally, run licenses update first\n' >&2
+    exit 1
 fi
 
 for f in "$__data_dir"/*; do
-	[[ -e "$f" ]] || break
-	printf '%s\n' "${f##*/}"
+    [[ -e "$f" ]] || break
+    printf '%s\n' "${f##*/}"
 done

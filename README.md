@@ -1,54 +1,57 @@
-# License CLI
+# licenses
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![Bash](https://img.shields.io/badge/Language-Bash-4EAA25.svg)](https://www.gnu.org/software/bash/)
+![Bash](https://img.shields.io/badge/Language-Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-000000?style=for-the-badge&logo=apple&logoColor=white)
+![License](https://img.shields.io/badge/License-GPL--2.0-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
+![XDG](https://img.shields.io/badge/Standard-XDG--Compliant-orange?style=for-the-badge)
+![Dependencies](https://img.shields.io/badge/Dependencies-curl-red?style=for-the-badge)
 
-A lightweight Bash command line utility for managing and applying software license templates. This tool allows users to quickly list available licenses, sync them from a remote repository, and apply a specific license to the current project directory.
+A high-performance, Pure Bash CLI utility for managing and applying software licenses to local projects. It provides a streamlined interface for fetching, caching, and deploying common license templates like MIT, GPL, and Apache.
 
 ## Features
 
-- **Quick Application**: Apply license templates (e.g., MIT, GPL-2.0) directly to your project as a `LICENSE` file.
-- **Local Caching**: Stores license templates locally for offline use after the initial sync.
-- **XDG Compliant**: Follows XDG Base Directory Specification for binary and data storage.
-- **Integrity Validation**: Includes a validation script to ensure consistency between license metadata and templates.
-- **Zero Dependencies**: Requires only Bash and `curl`.
+- **Local Caching**: Stores license templates locally in compliance with XDG standards for offline use.
+- **Shorthand Syntax**: Quickly apply licenses using the `licenses <id>` command.
+- **Sync Mechanism**: Keep license templates up to date with the remote repository.
+- **Pure Bash**: Optimized for performance with minimal external dependencies.
+- **Zero Configuration**: Works out of the box with sensible defaults.
 
 ## Tech Stack
 
-- **Shell**: Bash
-- **Network**: Curl
+- **Bash**: Core logic implemented with pure Bash built-ins.
+- **curl**: Used for reliable synchronization with remote sources.
+- **XDG Base Directory Spec**: Follows modern Linux/macOS directory standards for data storage.
 
 ## Project Structure
 
-- `licenses`: The main entry point script that routes commands.
-- `licenses-list`: Subcommand for listing available licenses in the local cache.
-- `licenses-get`: Subcommand for retrieving a specific license and creating a `LICENSE` file.
-- `licenses-update`: Subcommand for syncing license templates from the upstream repository.
-- `install.sh`: Automated installation script for local setup.
-- `validate.sh`: Integrity check utility for license files and metadata.
-- `license-templates/`: Directory containing the text for various license types.
-- `metadata/`: Contains the index for license discovery.
+```text
+.
+├── licenses          # Main entry point and command router
+├── licenses-get      # Logic for retrieving and applying licenses
+├── licenses-list     # Utility to list cached license templates
+├── licenses-update   # Synchronization script for remote updates
+├── install.sh        # Installation script
+├── license-templates # Source directory for license templates
+└── metadata          # Project metadata and indexing
+```
 
 ## Installation
 
-You can install the utility using the provided installation script:
+To install the utility to your local system:
 
-```bash
-curl -sSL https://raw.githubusercontent.com/unamatasanatarai/licenses/master/install.sh | bash
-```
+1. Clone the repository.
+2. Run the installation script:
+   ```bash
+   ./install.sh
+   ```
 
-Alternatively, run the script locally from the repository:
-
-```bash
-./install.sh
-```
-
-Ensure that your `PATH` includes the installation directory (usually `~/.local/bin`).
+The script will handle setting up the necessary directories and adding the utilities to your path.
 
 ## Usage
 
 ### Sync Licenses
-Download or update the local cache with the latest license templates:
+Before first use, or to get the latest templates, run:
 ```bash
 licenses update
 ```
@@ -60,19 +63,15 @@ licenses list
 ```
 
 ### Apply a License
-Create a `LICENSE` file in the current directory (e.g., for MIT):
+To apply a license (e.g., MIT) to your current directory as a `LICENSE` file:
 ```bash
-licenses get MIT
-```
+# Shorthand usage
+licenses mit
 
-## Validation
-
-The project includes a validation script to ensure that all indexed licenses have corresponding template files and follow naming conventions:
-
-```bash
-./validate.sh
+# Explicit usage
+licenses get mit
 ```
 
 ## License
 
-This project is licensed under the GNU General Public License v2.0. See the [LICENSE](LICENSE) file for details.
+This project is distributed under the GNU General Public License v2.0. See the [LICENSE](LICENSE) file for details.

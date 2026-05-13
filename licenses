@@ -6,16 +6,16 @@ cmd="$1"
 
 case "$cmd" in
 "" | list)
-	licenses-list
-	;;
+    licenses-list
+    ;;
 get)
-	licenses-get "$2"
-	;;
+    licenses-get "$2"
+    ;;
 update)
-	licenses-update
-	;;
+    licenses-update
+    ;;
 -h | --help | help)
-	cat <<EOF
+    cat <<EOF
 usage: ${0##*/} [command | license-id]
 
 commands:
@@ -31,9 +31,9 @@ example usage:
   ${0##*/} list
   ${0##*/} mit
 EOF
-	exit 0
-	;;
+    exit 0
+    ;;
 *)
-	licenses-get "$cmd"
-	;;
+    licenses-get "$cmd"
+    ;;
 esac

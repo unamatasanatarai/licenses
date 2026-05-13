@@ -3,8 +3,8 @@
 license_id="$1"
 
 if [[ -z "$license_id" ]]; then
-	printf 'usage: %s <license-id>\n' "${0##*/}" >&2
-	exit 1
+    printf 'usage: %s <license-id>\n' "${0##*/}" >&2
+    exit 1
 fi
 
 data_dir=${XDG_DATA_HOME:-"$HOME/.local/share"}
@@ -12,25 +12,25 @@ license_path="$data_dir/licenses/$license_id"
 dest_path="$PWD/LICENSE"
 
 if [[ ! -f "$license_path" ]]; then
-	printf 'license not found: %s (run licenses-update to sync)\n' "$license_id" >&2
-	exit 2
+    printf 'license not found: %s (run licenses-update to sync)\n' "$license_id" >&2
+    exit 2
 fi
 
 if [[ -d "$dest_path" || -d "$PWD/license" || -d "$PWD/License" ]]; then
-	printf 'error: conflicting LICENSE directory exists in %s\n' "$PWD" >&2
-	exit 3
+    printf 'error: conflicting LICENSE directory exists in %s\n' "$PWD" >&2
+    exit 3
 fi
 
 if [[ -e "$dest_path" && ! -f "$dest_path" ]]; then
-	printf 'error: destination exists and is not a regular file: %s\n' "$dest_path" >&2
-	exit 4
+    printf 'error: destination exists and is not a regular file: %s\n' "$dest_path" >&2
+    exit 4
 fi
 
 cp -- "$license_path" "$dest_path"
 
 if [[ $? -ne 0 ]]; then
-	printf 'failed to copy license file to %s\n' "$dest_path" >&2
-	exit 5
+    printf 'failed to copy license file to %s\n' "$dest_path" >&2
+    exit 5
 fi
 
 printf 'copied %s to %s\n' "$license_id" "$dest_path"
