@@ -16,22 +16,24 @@ update)
 	;;
 -h | --help | help)
 	cat <<EOF
-usage: ${0##*/} <command>
+usage: ${0##*/} [command | license-id]
 
 commands:
   list   - list available licenses (local cache)
   get    - copy a license to LICENSE file
   update - download/sync all available licenses
 
+shorthand:
+  ${0##*/} <license-id>  (alias for get)
+
 example usage:
   ${0##*/} update
   ${0##*/} list
-  ${0##*/} get MIT
+  ${0##*/} mit
 EOF
 	exit 0
 	;;
 *)
-	printf 'unknown command: %s\n' "$cmd" >&2
-	exit 1
+	licenses-get "$cmd"
 	;;
 esac
